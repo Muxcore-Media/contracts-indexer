@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+package muxcore.indexer.v1;
+
+option go_package = "github.com/Muxcore-Media/contracts-indexer/gen/muxcore/indexer/v1;indexerv1";
+
+import "google/protobuf/timestamp.proto";
+
+service IndexerService {
+  rpc Search(SearchRequest) returns (SearchResponse);
+  rpc GetCapabilities(GetCapabilitiesRequest) returns (GetCapabilitiesResponse);
+  rpc ListIndexers(ListIndexersRequest) returns (ListIndexersResponse);
+}
+
+message SearchRequest {
+  string query = 1;
+  string type = 2;
+  int32 year = 3;
+  int32 season = 4;
+  int32 episode = 5;
+  repeated string categories = 6;
+  int32 limit = 7;
+  int32 offset = 8;
+  repeated int32 indexer_ids = 9;
+}
+
+message SearchResponse {
+  repeated SearchResult results = 1;
+  int32 total = 2;
+}
+
+message SearchResult {
+  string guid = 1;
+  string title = 2;
+  string info_url = 3;
+  string download_url = 4;
+  int64 size = 5;
+  int32 seeders = 6;
+  int32 peers = 7;
+  string indexer_name = 8;
+  int32 indexer_id = 9;
+  google.protobuf.Timestamp publish_date = 10;
+  string category = 11;
+  string sub_category = 12;
+  string imdb_id = 13;
+  int32 tmdb_id = 14;
+  int32 tvdb_id = 15;
+  string download_protocol = 16;
+}
+
+message GetCapabilitiesRequest {}
+
+message GetCapabilitiesResponse {
+  bool supports_search = 1;
+  bool supports_movie_search = 2;
+  bool supports_tv_search = 3;
+  repeated string supported_categories = 4;
+  repeated string supported_protocols = 5;
+}
+
+message ListIndexersRequest {}
+
+message ListIndexersResponse {
+  repeated IndexerInfo indexers = 1;
+}
+
+message IndexerInfo {
+  int32 id = 1;
+  string name = 2;
+  string protocol = 3;
+  string language = 4;
+  bool configured = 5;
+}

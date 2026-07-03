@@ -1,0 +1,7 @@
+{
+  "name": "contracts-indexer",
+  "version": "0.1.0",
+  "description": "Indexer contract interfaces for MuxCore",
+  "capabilities": ["contracts.indexer"],
+  "roles": ["contracts"]
+}
