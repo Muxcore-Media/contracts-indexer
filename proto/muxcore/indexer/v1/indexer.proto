@@ -12,6 +12,10 @@ service IndexerService {
   rpc ListIndexers(ListIndexersRequest) returns (ListIndexersResponse);
 }
 
+// SearchRequest searches indexers for releases.
+// For TV: episode=0 with season>0 means season-pack search (no Exx in query).
+// absolute is used for anime absolute-number queries; indexers may ignore it
+// while still matching the absolute token in query.
 message SearchRequest {
   string query = 1;
   string type = 2;
@@ -22,6 +26,7 @@ message SearchRequest {
   int32 limit = 7;
   int32 offset = 8;
   repeated int32 indexer_ids = 9;
+  int32 absolute = 10;
 }
 
 message SearchResponse {
