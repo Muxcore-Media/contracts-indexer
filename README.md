@@ -14,6 +14,10 @@ Protobuf/gRPC contract interfaces for search indexer modules in MuxCore.
 - TV: `episode=0` with `season>0` means season-pack search (no Exx in query)
 - `absolute` — anime absolute-number field; indexers may ignore it while still matching an absolute token in `query`
 
+## Version
+
+**v0.1.0** — see [CHANGELOG.md](CHANGELOG.md) and [COMPATIBILITY.md](COMPATIBILITY.md).
+
 ## Go import
 
 Generated stubs: `github.com/Muxcore-Media/contracts-indexer/muxcore/indexer/v1`
