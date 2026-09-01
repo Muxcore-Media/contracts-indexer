@@ -50,3 +50,38 @@ jobs:
           else go build -o /dev/null ./...
           fi
           go vet ./...
+
+  proto-check:
+    runs-on: native
+    steps:
+      - uses: https://data.forgejo.org/actions/checkout@v4
+      - name: Install Go
+        run: |
+          set -euo pipefail
+          ver=1.26.5
+          mkdir -p "$HOME/.local"
+          if [ ! -x "$HOME/.local/go/bin/go" ] || ! "$HOME/.local/go/bin/go" version | grep -q "$ver"; then
+            curl -fsSL "https://go.dev/dl/go${ver}.linux-amd64.tar.gz" | tar -C "$HOME/.local" -xz
+          fi
+          echo "$HOME/.local/go/bin" >> "$GITHUB_PATH"
+      - name: Install protoc
+        run: |
+          set -euo pipefail
+          PB_REL="https://github.com/protocolbuffers/protobuf/releases/download/v25.3"
+          curl -fsSL "${PB_REL}/protoc-25.3-linux-x86_64.zip" -o /tmp/protoc.zip
+          unzip -qo /tmp/protoc.zip -d "$HOME/.local"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - name: Install protoc plugins
+        run: |
+          go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.36.6
+          go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.5.1
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+      - name: Regenerate proto
+        run: make proto
+      - name: Check for uncommitted changes
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "Error: generated proto files are out of date. Run 'make proto' and commit."
+            git status --porcelain
+            exit 1
+          fi

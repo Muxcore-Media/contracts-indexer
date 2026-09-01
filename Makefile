@@ -12,7 +12,7 @@ lint:
 	golangci-lint run --timeout 120s ./...
 
 clean:
-	rm -f gen/muxcore/indexer/v1/*.go
+	rm -f muxcore/indexer/v1/*.go
 
 fmt:
 	$(GO) fmt ./...

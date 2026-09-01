@@ -2,20 +2,42 @@ syntax = "proto3";
 
 package muxcore.indexer.v1;
 
-option go_package = "github.com/Muxcore-Media/contracts-indexer/gen/muxcore/indexer/v1;indexerv1";
+option go_package = "github.com/Muxcore-Media/contracts-indexer/muxcore/indexer/v1;indexerv1";
 
 import "google/protobuf/timestamp.proto";
 
+// SearchType is the canonical vocabulary for SearchRequest.type.
+// On the wire, type is a lowercase string token matching the enum name without
+// the SEARCH_TYPE_ prefix (e.g. SEARCH_TYPE_MOVIE → "movie").
+enum SearchType {
+  SEARCH_TYPE_UNSPECIFIED = 0;
+  SEARCH_TYPE_MOVIE = 1;
+  SEARCH_TYPE_TV = 2;
+  SEARCH_TYPE_MUSIC = 3;
+  SEARCH_TYPE_BOOK = 4;
+  SEARCH_TYPE_AUDIOBOOK = 5;
+  SEARCH_TYPE_COMIC = 6;
+}
+
 service IndexerService {
+  // Search queries configured indexers. Returns ResourceExhausted when rate-limited.
   rpc Search(SearchRequest) returns (SearchResponse);
   rpc GetCapabilities(GetCapabilitiesRequest) returns (GetCapabilitiesResponse);
   rpc ListIndexers(ListIndexersRequest) returns (ListIndexersResponse);
 }
 
 // SearchRequest searches indexers for releases.
-// For TV: episode=0 with season>0 means season-pack search (no Exx in query).
-// absolute is used for anime absolute-number queries; indexers may ignore it
-// while still matching the absolute token in query.
+//
+// type: canonical tokens — movie, tv, music, book, audiobook, comic (see SearchType).
+// categories: indexer-specific Newznab/Torznab category IDs; pass through when known.
+//
+// TV season-pack: episode=0 with season>0 (field tags 5 and 4) — no Exx in query.
+// Anime absolute: absolute (field tag 10) for absolute-number queries; indexers may
+// ignore the field while still matching an absolute token in query.
+//
+// Paging: limit defaults to 50 when unset or zero; max 100. offset is zero-based.
+// Optional imdb_id / tmdb_id / tvdb_id enable Newznab/Torznab ID search when the
+// indexer supports it (see GetCapabilitiesResponse.supports_id_search).
 message SearchRequest {
   string query = 1;
   string type = 2;
@@ -27,13 +49,21 @@ message SearchRequest {
   int32 offset = 8;
   repeated int32 indexer_ids = 9;
   int32 absolute = 10;
+  string imdb_id = 11;
+  int32 tmdb_id = 12;
+  int32 tvdb_id = 13;
 }
 
+// SearchResponse holds a page of results.
+// total is the unpaged hit count across all matching releases (not len(results)).
 message SearchResponse {
   repeated SearchResult results = 1;
   int32 total = 2;
 }
 
+// SearchResult is one release candidate.
+// download_url must not embed indexer API keys or credentials (strip Torznab apikey=, etc.).
+// infohash is the torrent info hash when known; callers should prefer it over parsing magnets.
 message SearchResult {
   string guid = 1;
   string title = 2;
@@ -51,6 +81,7 @@ message SearchResult {
   int32 tmdb_id = 14;
   int32 tvdb_id = 15;
   string download_protocol = 16;
+  string infohash = 17;
 }
 
 message GetCapabilitiesRequest {}
@@ -61,6 +92,10 @@ message GetCapabilitiesResponse {
   bool supports_tv_search = 3;
   repeated string supported_categories = 4;
   repeated string supported_protocols = 5;
+  bool supports_music_search = 6;
+  bool supports_book_search = 7;
+  bool supports_id_search = 8;
+  bool supports_season_pack = 9;
 }
 
 message ListIndexersRequest {}
