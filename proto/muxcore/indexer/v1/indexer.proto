@@ -24,6 +24,12 @@ service IndexerService {
   rpc Search(SearchRequest) returns (SearchResponse);
   rpc GetCapabilities(GetCapabilitiesRequest) returns (GetCapabilitiesResponse);
   rpc ListIndexers(ListIndexersRequest) returns (ListIndexersResponse);
+  // CRUD is implemented by indexer-torznab in Prowlarr mode only (proxies /api/v1/indexer).
+  // Direct Torznab/Jackett and piratebay return FailedPrecondition / Unimplemented.
+  rpc GetIndexer(GetIndexerRequest) returns (IndexerSpec);
+  rpc CreateIndexer(CreateIndexerRequest) returns (IndexerSpec);
+  rpc UpdateIndexer(UpdateIndexerRequest) returns (IndexerSpec);
+  rpc DeleteIndexer(DeleteIndexerRequest) returns (DeleteIndexerResponse);
 }
 
 // SearchRequest searches indexers for releases.
@@ -111,3 +117,35 @@ message IndexerInfo {
   string language = 4;
   bool configured = 5;
 }
+
+// IndexerSpec is the household create/update payload for a Prowlarr Torznab/Newznab feed.
+// api_key is write-only: implementers must never echo it. has_api_key is read-only.
+message IndexerSpec {
+  int32 id = 1;
+  string name = 2;
+  string protocol = 3;       // torrent | usenet
+  string implementation = 4; // torznab | newznab
+  string base_url = 5;
+  string api_key = 6;
+  bool enable = 7;
+  bool has_api_key = 8;
+  string language = 9;
+}
+
+message GetIndexerRequest {
+  int32 id = 1;
+}
+
+message CreateIndexerRequest {
+  IndexerSpec indexer = 1;
+}
+
+message UpdateIndexerRequest {
+  IndexerSpec indexer = 1;
+}
+
+message DeleteIndexerRequest {
+  int32 id = 1;
+}
+
+message DeleteIndexerResponse {}

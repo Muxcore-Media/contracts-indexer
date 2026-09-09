@@ -12,6 +12,10 @@ func TestIndexerServiceRPCNamesStable(t *testing.T) {
 		"Search":          true,
 		"GetCapabilities": true,
 		"ListIndexers":    true,
+		"GetIndexer":      true,
+		"CreateIndexer":   true,
+		"UpdateIndexer":   true,
+		"DeleteIndexer":   true,
 	}
 	got := make(map[string]bool, len(IndexerService_ServiceDesc.Methods))
 	for _, m := range IndexerService_ServiceDesc.Methods {
@@ -75,6 +79,21 @@ func TestIndexerInfoFieldNumbers(t *testing.T) {
 		"configured": 5,
 	}
 	assertFieldNumbers(t, (&IndexerInfo{}).ProtoReflect().Descriptor(), want)
+}
+
+func TestIndexerSpecFieldNumbers(t *testing.T) {
+	want := map[string]protoreflect.FieldNumber{
+		"id":             1,
+		"name":           2,
+		"protocol":       3,
+		"implementation": 4,
+		"base_url":       5,
+		"api_key":        6,
+		"enable":         7,
+		"has_api_key":    8,
+		"language":       9,
+	}
+	assertFieldNumbers(t, (&IndexerSpec{}).ProtoReflect().Descriptor(), want)
 }
 
 func TestTVSeasonPackAndAnimeAbsoluteFieldTags(t *testing.T) {

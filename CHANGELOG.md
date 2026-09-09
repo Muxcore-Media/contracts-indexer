@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.2.1] — 2026-09-09
+
+### Added
+- Household indexer CRUD RPCs: `GetIndexer`, `CreateIndexer`, `UpdateIndexer`, `DeleteIndexer`.
+- `IndexerSpec` for Prowlarr Torznab/Newznab feeds. `api_key` is write-only; `has_api_key` is read-only.
+
+### Compatibility
+- Additive **v1** RPCs. Implementers that embed `UnimplementedIndexerServiceServer` keep compiling; only Prowlarr-mode `indexer-torznab` is expected to implement CRUD.
+
 ## [0.2.0] — 2026-08-31
 
 ### Added
