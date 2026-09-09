@@ -54,6 +54,16 @@ When `GetCapabilitiesResponse.supports_id_search` is true, implementers should h
 
 `SearchResult.infohash` carries the torrent info hash when known. Callers should prefer it over parsing `download_url` magnet links.
 
+## Indexer CRUD
+
+`GetIndexer` / `CreateIndexer` / `UpdateIndexer` / `DeleteIndexer` are additive v1 RPCs for household Prowlarr catalog edits.
+
+| Situation | Behavior |
+|-----------|----------|
+| Prowlarr mode (`PROWLARR_URL`) | Proxy `/api/v1/indexer` for Torznab/Newznab feeds |
+| Direct Torznab / Jackett / piratebay | `FailedPrecondition` or `Unimplemented` |
+| `IndexerSpec.api_key` | Write-only — never returned on get/list |
+
 ## Error and privacy contract
 
 | Situation | Behavior |
