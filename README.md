@@ -31,6 +31,16 @@ Protobuf/gRPC contract interfaces for search indexer modules in MuxCore.
 
 Generated stubs: `github.com/Muxcore-Media/contracts-indexer/muxcore/indexer/v1`
 
+## Conformance suite
+
+`github.com/Muxcore-Media/contracts-indexer/muxcore/indexer/v1/conformance` is a shared test suite every `IndexerService` implementation should run from its own tests, against an in-process server or fixture engine:
+
+```go
+conformance.Run(t, conformance.Suite{Client: client, Query: "Big Buck Bunny"})
+```
+
+It checks behaviour consumers rely on that the proto types cannot express. Preferences that older modules may not meet yet (exact gRPC codes) are logged rather than failed.
+
 ## Implementing Modules
 
 Any module advertising capability **`indexer`** may implement this service. Valid shapes:

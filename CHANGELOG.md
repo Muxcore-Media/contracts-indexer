@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+- `conformance` package: a reusable test suite for `IndexerService` implementations (ported from the arrgo adapter contract tests).
+
 ## [0.2.1] — 2026-09-09
 
 ### Added
