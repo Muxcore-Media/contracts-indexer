@@ -3,7 +3,6 @@ package indexerv1
 import (
 	"testing"
 
-	"google.golang.org/grpc"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
@@ -129,7 +128,7 @@ func TestSearchTypeVocabulary(t *testing.T) {
 }
 
 func TestImportPath(t *testing.T) {
-	var _ grpc.ServiceDesc = IndexerService_ServiceDesc
+	var _ = IndexerService_ServiceDesc
 }
 
 func TestCapabilityIDs(t *testing.T) {

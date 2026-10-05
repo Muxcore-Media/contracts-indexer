@@ -17,7 +17,7 @@ Protobuf/gRPC contract library — **not** a runnable sidecar. Workspace context
 
 - **Proto changes are the product.** Edit `.proto` first, then regenerate stubs.
 - Run `make proto` after any `.proto` edit; commit generated `muxcore/indexer/v1/*.go` with the proto change.
-- CI (`proto-check` in `.forgejo/workflows/ci.yml` and `.github/workflows/ci.yml`) fails if stubs drift.
+- CI (`proto-check` in `.github/workflows/ci.yml`) fails if stubs drift.
 - Additive field changes only on **v1** — new fields get new tag numbers; never renumber or change wire types.
 - Breaking changes require a new major package (`muxcore/indexer/v2`) and coordinated consumer bumps.
 - Extend `muxcore/indexer/v1/contract_test.go` when adding RPCs or freezing new field numbers.

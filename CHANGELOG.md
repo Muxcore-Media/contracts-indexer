@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-10-05
+
+### Changed
+- CI runs on GitHub-hosted runners from the umbrella template; retired-origin workflows removed.
+- Dependencies resolve from published GitHub tags (no filesystem `replace`); requires core v0.6.0.
+
 ### Added
 - `conformance` package: a reusable test suite for `IndexerService` implementations (ported from the arrgo adapter contract tests).
 
@@ -24,7 +30,7 @@
 - Paging contract: default limit 50, max 100; `total` is unpaged hit count.
 - Error/privacy contract: `ResourceExhausted` for rate limits; empty results when unconfigured; no API keys in `download_url`.
 - `contract_test.go` freezing RPC names and field numbers.
-- Forgejo CI `proto-check` job.
+- CI `proto-check` job.
 
 ### Fixed
 - `go_package` aligned with checked-in stubs (`muxcore/indexer/v1`, not `gen/`).
